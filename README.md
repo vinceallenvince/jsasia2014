@@ -7,3 +7,5 @@ View the demos - [http://vinceallenvince.github.io/jsasia2014/](http://vincealle
 View the slides - [http://vinceallenvince.github.io/jsasia2014/jsasia2014_slides.pdf](http://vinceallenvince.github.io/jsasia2014/jsasia2014_slides.pdf)
 
 View the videos - [https://vimeo.com/groups/221221](https://vimeo.com/groups/221221)
+
+!["Pixel Art and Complex Systems"](http://vinceallenvince.github.io/jsasia2014/img/title.png)
