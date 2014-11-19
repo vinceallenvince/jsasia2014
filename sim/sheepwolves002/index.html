@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Bit-Shadow Machine</title>
+  <link href="css/bitshadowmachine.min.css" type="text/css" charset="utf-8" rel="stylesheet" />
+  <script src="scripts/bitshadowmachine.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/bitshadowitems.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/colorpalette.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/soundbed.min.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id='worldA'></div>
+    <script type="text/javascript" charset="utf-8">
+
+      var paletteWolf = new ColorPalette();
+      paletteWolf.addColor({
+        min: 8,
+        max: 24,
+        startColor: [255, 130, 49],
+        endColor: [223, 88, 1]
+      });
+
+      var paletteSheep = new ColorPalette();
+      paletteSheep.addColor({
+        min: 8,
+        max: 24,
+        startColor: [219, 203, 154],
+        endColor: [157, 135, 68]
+      });
+
+      var paletteZombies = new ColorPalette();
+      paletteZombies.addColor({
+        min: 8,
+        max: 24,
+        startColor: [119, 255, 172],
+        endColor: [0, 190, 74]
+      });
+
+      function isInside(obj, container) {
+        if (!obj || !container) {
+          throw new Error('isInside() requires both an object and a container.');
+        }
+
+        if (obj.caught || container.caught) {
+          return;
+        }
+
+        container.scale = container.scale || 0;
+
+        if (obj.location.x > container.location.x - container.scale * 2 &&
+          obj.location.x < container.location.x + container.scale * 2 &&
+          obj.location.y > container.location.y - container.scale * 2 &&
+          obj.location.y< container.location.y + container.scale * 2) {
+          return true;
+        }
+        return false;
+      };
+
+      var rand = BitShadowMachine.Utils.getRandomNumber,
+          map = BitShadowMachine.Utils.map;
+
+      var caughtDuration = 60;
+
+      BitShadowItems.configure(BitShadowMachine.System);
+
+      BitShadowMachine.System.Classes = {
+        Agent: BitShadowItems.Agent,
+        Sensor: BitShadowItems.Sensor,
+        Stimulus: BitShadowItems.Stimulus
+      };
+
+      function createWolf(x, y, velocity) {
+
+        var vel = velocity ? new BitShadowMachine.Vector(velocity.x, velocity.y) :
+            new BitShadowMachine.Vector(rand(0, -2, true), rand(-2, 2, true))
+
+        var wolf = BitShadowMachine.System.add('Agent', {
+          type: 'Wolf',
+          color: paletteWolf.getColor(),
+          maxSpeed: 4,
+          wrapWorldEdges: true,
+          motorSpeed: 1,
+          location: new BitShadowMachine.Vector(x, y),
+          velocity: vel,
+          flocking: true,
+          sensors: [
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Sheep',
+              targetClass: 'Sheep',
+              sensitivity: 100,
+              behavior: 'AGGRESSIVE',
+              delay: 100
+            }),
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Zombie',
+              targetClass: 'Zombie',
+              sensitivity: 100,
+              behavior: 'COWARD'
+            })
+          ],
+          beforeStep: function() {
+
+            var sheep = BitShadowMachine.System.getAllItemsByAttribute('type', 'Sheep', 'Sheep');
+
+            for (var i = sheep.length - 1; i >= 0; i--) {
+              if (isInside(this, sheep[i]) && !sheep[i].caught && !this.caught) {
+
+                for (var j = sheep[i].sensors.length - 1; j >= 0; j--) {
+                  BitShadowMachine.System.remove(sheep[i].sensors[j]);
+                }
+                //BitShadowMachine.System.remove(sheep[i]);
+                sheep[i].scale = 2;
+                sheep[i].life = 0;
+                sheep[i].lifespan = caughtDuration;
+                sheep[i].caught = true;
+
+                if (rand(1, 2) === 1) {
+                  var wolves = BitShadowMachine.System.getAllItemsByAttribute('type', 'Wolf', 'Wolf');
+                  if (wolves.length > 2) {
+                    createZombie(sheep[i].location.x, sheep[i].location.y, this.velocity.mult(-1));
+                  } else {
+                    createWolf(sheep[i].location.x, sheep[i].location.y);
+                  }
+                  /*
+                   Uncomment createWolf below and comment createZombie to create unbalanced system.
+                  */
+                  //createWolf(sheep[i].location.x, sheep[i].location.y);
+                } else {
+                  createWolf(sheep[i].location.x, sheep[i].location.y);
+                }
+
+              }
+            }
+          }
+        });
+        wolf.type = 'Wolf';
+        return wolf;
+      }
+
+      function createSheep(x, y, velocity) {
+
+        var vel = velocity ? new BitShadowMachine.Vector(velocity.x, velocity.y) :
+            new BitShadowMachine.Vector(rand(0, 2, true), rand(-2, 2, true))
+
+        var sheep = BitShadowMachine.System.add('Agent', {
+          type: 'Sheep',
+          color: paletteSheep.getColor(),
+          maxSpeed: 2,
+          motorSpeed: 0.5,
+          wrapWorldEdges: true,
+          location: new BitShadowMachine.Vector(x, y),
+          velocity: vel,
+          flocking: true,
+          sensors: [
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Wolf',
+              targetClass: 'Wolf',
+              sensitivity: 75,
+              behavior: 'COWARD',
+              minOpacity: 0.25,
+              maxOpacity: 0.5
+            })/*,
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Zombie',
+              targetClass: 'Zombie',
+              sensitivity: 100,
+              behavior: 'AGGRESSIVE',
+              delay: 100
+            })*/
+          ],
+          beforeStep: function() {
+            return;
+            var zombies = BitShadowMachine.System.getAllItemsByAttribute('type', 'Zombie', 'Zombie');
+
+            for (var i = zombies.length - 1; i >= 0; i--) {
+              if (isInside(this, zombies[i]) && !zombies[i].caught && !this.caught) {
+
+                for (var j = zombies[i].sensors.length - 1; j >= 0; j--) {
+                  BitShadowMachine.System.remove(zombies[i].sensors[j]);
+                }
+                //BitShadowMachine.System.remove(zombies[i]);
+                zombies[i].scale = 2;
+                zombies[i].life = 0;
+                zombies[i].lifespan = caughtDuration;
+                zombies[i].caught = true;
+
+
+                //createWolf(zombies[i].location.x, zombies[i].location.y, this.velocity.mult(-1));
+                createSheep(zombies[i].location.x, zombies[i].location.y, this.velocity.mult(-1));
+              }
+            }
+          }
+        });
+        sheep.type = 'Sheep';
+        return sheep;
+      }
+
+      function createZombie(x, y, velocity) {
+
+        var vel = new BitShadowMachine.Vector(velocity.x * -1, velocity.y * -1);
+
+        var zombie = BitShadowMachine.System.add('Agent', {
+          type: 'Zombie',
+          color: paletteZombies.getColor(),
+          maxSpeed: 5,
+          motorSpeed: 0.35,
+          wrapWorldEdges: true,
+          location: new BitShadowMachine.Vector(x, y),
+          velocity: new BitShadowMachine.Vector(vel.x, vel.y),
+          flocking: true,
+          sensors: [
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Wolf',
+              targetClass: 'Wolf',
+              sensitivity: 200,
+              behavior: 'AGGRESSIVE',
+              delay: 100,
+              minOpacity: 0.25,
+              maxOpacity: 0.5
+            })
+          ],
+          beforeStep: function() {
+
+            var wolves = BitShadowMachine.System.getAllItemsByAttribute('type', 'Wolf', 'Wolf');
+
+            for (var i = wolves.length - 1; i >= 0; i--) {
+              if (isInside(this, wolves[i]) && !wolves[i].caught && !this.caught) {
+
+                for (var j = wolves[i].sensors.length - 1; j >= 0; j--) {
+                  BitShadowMachine.System.remove(wolves[i].sensors[j]);
+                }
+                //BitShadowMachine.System.remove(wolves[i]);
+
+                wolves[i].scale = 2;
+                wolves[i].life = 0;
+                wolves[i].lifespan = caughtDuration;
+                wolves[i].caught = true;
+
+
+                createSheep(wolves[i].location.x, wolves[i].location.y, this.velocity.mult(-1));
+                /*
+                  Comment createSheep to create unbalanced system.
+                */
+              }
+            }
+          }
+        });
+        zombie.type = 'Zombie';
+        return zombie;
+      }
+
+      BitShadowMachine.System.setup(function() {
+
+        var world = this.add('World', {
+          width: 960,
+          height: 540,
+          resolution: 2,
+          el: document.getElementById('worldA'),
+          color: [0, 0, 0],
+          gravity: new BitShadowMachine.Vector(0, 0),
+          c: 0.1
+        });
+
+        for (var i = 0; i < 120; i++) {
+          createSheep(world.width * 0.05, world.height / 2);
+        }
+
+        for (var i = 0; i < 1; i++) {
+          createWolf(world.width * 0.95, world.height / 2);
+        }
+
+      });
+      BitShadowMachine.System.loop();
+
+      var player = new SoundBed.Player();
+      player.init();
+
+    </script>
+  </body>
+</html>

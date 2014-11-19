@@ -1,0 +1,69 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent;margin:0;padding:0;}body{line-height:1;}ol,ul{list-style:none;}blockquote,q{quotes:none;}blockquote:before,blockquote:after,q:before,q:after{content:none;}:focus{outline:0;}ins{text-decoration:none;}del{text-decoration:line-through;}table{border-collapse:collapse; border-spacing:0;}
+body {padding-top: 1em; background: #333;font-family: "Franklin Gothic Medium", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif;}
+header, footer, section {display: block;}
+h1 {color: #999;}
+h2, h3 {color: #999;}
+p {font-size: .85em;line-height: 1.25em;color: #444;}
+p {padding-bottom: 1em;}
+li {margin-bottom: 1em;}
+a {text-decoration: none;color: #ff4500;}
+a:hover {text-decoration: underline;color: #ff4500;}
+a:visited {text-decoration: none;color: #ff4500;}
+.book-title {font-style: oblique;}
+section {padding: 1em 0;}
+.wrapper {width: 670px;margin: 10px auto;}
+.navigation {color: #999;}
+.navigation table td {vertical-align: middle;padding: 0;}
+.navigation table td.cell-twitter {padding-top: 3px;}
+.nav-button {margin-right: 1em;}
+.nav-button:hover {opacity: .75;text-decoration: none;}
+.nav-button:active {opacity: .5;}
+.nav-home:hover {text-decoration: none;}
+.content {background: #fff;}
+.content-inner {padding: 0;}
+.title {font-size: 4em;line-height: 1em;text-transform: uppercase;}
+.title-suffix {color: #ccc;}
+.section-title {font-size: 1.5em;line-height: 2em;}
+section p {width: 100%;}
+a.notes-headline, a.notes-headline:visited {color: #444;}
+.link-more {color: #ff4500;}
+.container-feature {display: inline-block;vertical-align: top;margin-right: 10px;width: 318px;border: 1px solid #aaa;background: #eee;margin-bottom: 1em;text-decoration: none;}
+
+.feature-img {width: 318px;height: 318px;background: #ccc;}
+.feature-img.simple {background: #000 url('../img/simple.png');}
+.feature-img.animation {background: #000 url('../img/animation.png');}
+.feature-img.animationitems {background: #000 url('../img/animationitems.png');}
+.feature-img.animationblur {background: #000 url('../img/animationblur.png');}
+.feature-img.chai {background: #000 url('../img/chai.png');}
+.feature-img.cats {background: #000 url('../img/cats.png');}
+.feature-img.milk {background: #000 url('../img/milk.png');}
+.feature-img.farm {background: #000 url('../img/farm.png');}
+.feature-img.funnel-base {background: #000 url('../img/funnel-base.jpg') no-repeat top left;background-size: contain;}
+.feature-img.funnel-debris {background: #000 url('../img/funnel-debris.jpg') no-repeat top left;background-size: contain;}
+.feature-img.funnel-spine-linear {background: #000 url('../img/funnel-spine-linear.jpg') no-repeat top left;background-size: contain;}
+.feature-img.funnel-spine {background: #000 url('../img/funnel-spine.jpg') no-repeat top left;background-size: contain;}
+.feature-img.funnel-shell {background: #000 url('../img/funnel-shell.jpg') no-repeat top left;background-size: contain;}
+.feature-img.funnel-shell-blur {background: #000 url('../img/funnel-shell-blur.jpg') no-repeat top left;background-size: contain;}
+.feature-img.vortex {background: #000 url('../img/vortex.jpg') no-repeat top left;background-size: contain;}
+.feature-img.agent {background: #000 url('../img/agent.jpg') no-repeat top left;background-size: contain;}
+.feature-img.sheepwolves001 {background: #000 url('../img/sheepwolves001.jpg') no-repeat top left;background-size: contain;}
+.feature-img.sheepwolves002 {background: #000 url('../img/sheepwolves002.jpg') no-repeat top left;background-size: contain;}
+.feature-img.sheepwolves003 {background: #000 url('../img/sheepwolves003.jpg') no-repeat top left;background-size: contain;}
+.feature-img.termitesrandomwalk {background: #000 url('../img/termitesrandomwalk.jpg') no-repeat top left;background-size: contain;}
+.feature-img.termitessense5 {background: #000 url('../img/termitessense5.jpg') no-repeat top left;background-size: contain;}
+.feature-img.termitessense100 {background: #000 url('../img/termitessense100.jpg') no-repeat top left;background-size: contain;}
+
+.feature-details {background: #fff;font-size: .65em;border-top: 1px solid #ddd;}
+.feature-details-inner {padding: 1em;}
+.container-behavior, .container-vehicle-description {display: inline-block;vertical-align: middle;}
+.container-behavior {color: #ff4500;opacity: .85;font-size: 3em;font-weight: bold;}
+.vehicle-type, .theme {color: #999;font-size: 1em;padding-left: 0.5em;line-height: 1.5em;}
+.theme {font-family: Georgia, Times, "Times New Roman", serif;font-style: oblique;font-size: .8em;color: #aaa;}
+.footer {border-top: 1px solid #aaa;padding: 1em 0;}
+@media screen and (max-width: 768px) {.wrapper {width: 320px;margin: 0 auto;}
+.container-feature {display: block;margin-right: -5px;}}
+@media screen and (max-width: 320px) {.title {margin-top: 0.25em;}
+section {padding: 0 0.75em;}
+.navigation {margin: 1em 0;padding: 0;}
+.nav-button {margin-right: 1.25em;}
+.footer {padding: 1em;}}

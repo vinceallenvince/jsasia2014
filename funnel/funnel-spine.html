@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="keywords" content="animation, DOM, renderer" />
+  <meta name="description" content="A DOM-based rendering engine." />
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name='apple-mobile-web-app-capable' content='yes' />
+  <title>Tiny Tornado | Funnel</title>
+  <link href="css/flora.min.css" type="text/css" charset="utf-8" rel="stylesheet" />
+  <script src="scripts/tinytornado.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="worldA"></div>
+    <script type="text/javascript" charset="utf-8">
+
+      var base = new TinyTornado.Funnel.Base({
+        opacity: 1,
+        perlinSpeed: 0.0001
+      });
+      var debris = new TinyTornado.Funnel.Debris();
+      var spine = new TinyTornado.Funnel.Spine({
+        opacity: 1
+      });
+
+      var vortex = new TinyTornado.Funnel.Runner(base, debris, spine);
+      vortex.init({
+        el: document.getElementById('worldA'),
+        width: 800,
+        height: 600
+      });
+
+    </script>
+  </body>
+</html

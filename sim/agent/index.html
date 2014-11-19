@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Bit-Shadow Machine</title>
+  <link href="css/bitshadowmachine.min.css" type="text/css" charset="utf-8" rel="stylesheet" />
+  <script src="scripts/bitshadowmachine.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/bitshadowitems.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/colorpalette.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/soundbed.min.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id='worldA'></div>
+    <script type="text/javascript" charset="utf-8">
+
+      var rand = BitShadowMachine.Utils.getRandomNumber,
+          map = BitShadowMachine.Utils.map;
+
+      var paletteFood = new ColorPalette();
+      paletteFood.addColor({
+        min: 8,
+        max: 24,
+        startColor: [174, 82, 23],
+        endColor: [227, 146, 93]
+      }).addColor({
+        min: 8,
+        max: 12,
+        startColor: [119, 255, 172],
+        endColor: [0, 190, 74]
+      });
+
+      function isInside(obj, container) {
+        if (!obj || !container) {
+          throw new Error('isInside() requires both an object and a container.');
+        }
+
+        container.scale = container.scale || 0;
+
+        if (obj.location.x > container.location.x - container.scale * 2 &&
+          obj.location.x < container.location.x + container.scale * 2 &&
+          obj.location.y > container.location.y - container.scale * 2 &&
+          obj.location.y< container.location.y + container.scale * 2) {
+          return true;
+        }
+        return false;
+      };
+
+      function createFood(x, y, scale) {
+
+        var s = scale || 2;
+
+        var food = BitShadowMachine.System.add('Food', {
+          type: 'Food',
+          scale: s,
+          color: paletteFood.getColor(),
+          isStatic: false,
+          location: new BitShadowMachine.Vector(x, y),
+          beforeStep: function() {
+            /*if (this.scale < 2) {
+              this.scale += 0.1;
+            }*/
+          }
+        });
+        food.type = 'Food';
+        return food;
+      }
+
+      BitShadowItems.configure(BitShadowMachine.System);
+
+      BitShadowMachine.System.Classes = {
+        Agent: BitShadowItems.Agent,
+        Sensor: BitShadowItems.Sensor
+      };
+
+      BitShadowMachine.System.setup(function() {
+
+        var world = this.add('World', {
+          width: 960,
+          height: 540,
+          resolution: 2,
+          el: document.getElementById('worldA'),
+          color: [0, 0, 0],
+          gravity: new BitShadowMachine.Vector(),
+          c: 0
+        });
+
+        var agent = this.add('Agent', {
+          motorSpeed: 1,
+          maxSpeed: 1.5,
+          velocity: new BitShadowMachine.Vector(rand(0, -2, true), rand(-2, 2, true)),
+          maxSteeringForce: 2,
+          sensors: [
+            BitShadowMachine.System.add('Sensor', {
+              type: 'Food',
+              targetClass: 'Food',
+              sensitivity: 50,
+              behavior: 'AGGRESSIVE',
+              delay: 0,
+              minOpacity: 0.25,
+              maxOpacity: 0.5
+            })
+          ],
+          beforeStep: function() {
+
+            var flag = false,
+                food = BitShadowMachine.System.getAllItemsByAttribute('type', 'Food', 'Food');
+
+            if (food.length) {
+              for (var i = food.length - 1; i >= 0; i--) {
+                if (isInside(this, food[i])) {
+                  food[i].eaten = true;
+                  food[i].location.x = -5000;
+                  food[i].location.y = -5000;
+                  BitShadowMachine.System.remove(food[i]);
+                  flag = true;
+                  break;
+                }
+              }
+
+              if (flag) {
+                //createFood(rand(0, world.width), rand(0, world.height));
+              }
+            }
+          }
+        });
+
+        for (var i = 0; i < 30; i++) {
+          createFood(rand(0, world.width), rand(0, world.height));
+        }
+
+      });
+      BitShadowMachine.System.loop();
+
+      var player = new SoundBed.Player();
+      player.init();
+
+    </script>
+  </body>
+</html>
